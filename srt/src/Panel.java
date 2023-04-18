@@ -140,4 +140,35 @@ public class Panel extends JPanel implements ActionListener {
     private void showTieDialog() {
         JOptionPane.showMessageDialog(null, "It's a tie.");
     }
+    // When an Action is performed from parameter "e" of the ActionEvent object listed,
+    // Basically, when a player either hunman or ai makes a move, this action is called.
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (isGameOver) {
+            return;
+        }
+
+        JButton button = (JButton) e.getSource();
+        int row = -1, col = -1;
+
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (buttons[i][j] == button) {
+                    row = i;
+                    col = j;
+                    break;
+                }
+            }
+        }
+
+        if (row == -1 || col == -1 || board[row][col] != ' ') {
+            return;
+        }
+
+        button.setText(Character.toString(currentPlayer));
+        board[row][col] = currentPlayer;
+
+        checkGameOver();
+        switchPlayers();
+    }
 }
