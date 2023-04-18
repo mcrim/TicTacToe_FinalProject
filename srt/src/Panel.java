@@ -104,6 +104,7 @@ public class Panel extends JPanel implements ActionListener {
     }
 
     //When there is a winner established via checkGameover, it will then gather to see who won
+    //Checks continously to see if there is a winner condition with if statements and for loops to see if anything matches. This was annoying.
     private char getWinner() {
         // Check rows
         for (int row = 0; row < BOARD_SIZE; row++) {
