@@ -56,4 +56,78 @@ public class Panel extends JPanel implements ActionListener {
             aiMove(); // Returns to the ai's move
         }
     }
+    // When ai is called to make a move
+    private void aiMove() {
+        int row, col;
+        do {
+            row = (int) (Math.random() * BOARD_SIZE);
+            col = (int) (Math.random() * BOARD_SIZE);
+        } while (board[row][col] != ' ');
+
+        buttons[row][col].setText(Character.toString(currentPlayer));
+        board[row][col] = currentPlayer;
+
+        checkGameOver();
+        switchPlayers();
+    }
+
+    //Will check to see if there is a winning exception towards the board players from humanplayer and aiplayer
+    private void checkGameOver() {
+        char winner = getWinner();
+        boolean isTie = true;
+
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                if (board[row][col] == ' ') {
+                    isTie = false;
+                }
+            }
+        }
+        //Decalres a winner
+        if (winner != ' ') {
+            isGameOver = true;
+            showWinnerDialog(winner);
+        } else if (isTie) { //Declares a tie
+            isGameOver = true;
+            showTieDialog();
+        }
+    }
+
+    //When a move is made, it will then switch the players choice and move either to humanPlayer or aiPlayer
+    private void switchPlayers() {
+        if (currentPlayer == humanPlayer) {
+            currentPlayer = aiPlayer;
+            aiMove();
+        } else {
+            currentPlayer = humanPlayer;
+        }
+    }
+
+    //When there is a winner established via checkGameover, it will then gather to see who won
+    private char getWinner() {
+        // Check rows
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            if (board[row][0] == board[row][1] && board[row][1] == board[row][2] && board[row][0] != ' ') {
+                return board[row][0];
+            }
+        }
+
+        // Check columns
+        for (int col = 0; col < BOARD_SIZE; col++) {
+            if (board[0][col] == board[1][col] && board[1][col] == board[2][col] && board[0][col] != ' ') {
+                return board[0][col];
+            }
+        }
+
+        // Check diagonals
+        if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != ' ') {
+            return board[0][0];
+        }
+
+        if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] != ' ') {
+            return board[0][2];
+        }
+
+        return ' ';
+    }
 }
