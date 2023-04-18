@@ -130,4 +130,14 @@ public class Panel extends JPanel implements ActionListener {
 
         return ' ';
     }
+    //When there is a winner, it will print the following dialog via GUI printing
+    private void showWinnerDialog(char winner) {
+        String message = (winner == humanPlayer) ? "Congratulations! You win." : "Sorry, you lose.";
+        JOptionPane.showMessageDialog(null, message);
+    }
+
+    //If there is a tie, it will print this dialog instead
+    private void showTieDialog() {
+        JOptionPane.showMessageDialog(null, "It's a tie.");
+    }
 }
