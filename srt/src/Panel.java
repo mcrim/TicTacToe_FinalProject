@@ -2,9 +2,11 @@
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Scanner;
+import javax.swing.*;
 
 public class Panel extends JPanel implements ActionListener {
     // Initialization of the values used to establish the game board and the user input values for turns and moves.
@@ -16,6 +18,39 @@ public class Panel extends JPanel implements ActionListener {
     private char aiPlayer;
     private char currentPlayer;
     private boolean isGameOver;
+
+
+    //Prompts the user if they want to start a new game or view the top score
+    private void playAgain() {
+        try {
+            File file = new File("top_score.txt");
+            Scanner scanner = new Scanner(file);
+
+            String line = scanner.nextLine();
+            JOptionPane.showMessageDialog(null, "The top score is: " + line);
+            scanner.close();
+        } catch (Exception e) {
+        }
+            String playAgain = JOptionPane.showInputDialog(null, "Do you want to play again? y=1/n=2", "Play Again", JOptionPane.QUESTION_MESSAGE);
+            if (playAgain.equals("1")) {
+                resetGame();
+                Frame frame = new Frame();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+            }
+        }
+    //Resets the board and isGameOver
+    private void resetGame() {
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                buttons[row][col].setText("");
+                board[row][col] = ' ';
+            }
+        }
+
+        isGameOver = false;
+    }
+
 
     //Panel is a class that extends JPanel and creates the game board and handles user input.
     public Panel() {
@@ -53,10 +88,10 @@ public class Panel extends JPanel implements ActionListener {
         } else {
             currentPlayer = aiPlayer;
             JOptionPane.showMessageDialog(null, "The computer goes first.");
-            aiMove(); // Returns to the ai's move
+            aiMove(); // Returns to the AI's move
         }
     }
-    // When ai is called to make a move
+    // When AI is called to make a move
     private void aiMove() {
         int row, col;
         do {
@@ -68,7 +103,9 @@ public class Panel extends JPanel implements ActionListener {
         board[row][col] = currentPlayer;
 
         checkGameOver();
-        switchPlayers();
+        if (isGameOver == false) {
+            switchPlayers();
+        }
     }
 
     //Will check to see if there is a winning exception towards the board players from humanplayer and aiplayer
@@ -83,13 +120,16 @@ public class Panel extends JPanel implements ActionListener {
                 }
             }
         }
+
         //Decalres a winner
         if (winner != ' ') {
             isGameOver = true;
             showWinnerDialog(winner);
+            playAgain();
         } else if (isTie) { //Declares a tie
             isGameOver = true;
             showTieDialog();
+            playAgain();
         }
     }
 
@@ -135,6 +175,7 @@ public class Panel extends JPanel implements ActionListener {
     private void showWinnerDialog(char winner) {
         String message = (winner == humanPlayer) ? "Congratulations! You win." : "Sorry, you lose.";
         JOptionPane.showMessageDialog(null, message);
+
     }
 
     //If there is a tie, it will print this dialog instead
@@ -170,6 +211,10 @@ public class Panel extends JPanel implements ActionListener {
         board[row][col] = currentPlayer;
 
         checkGameOver();
-        switchPlayers();
+        if (isGameOver == false) {
+            switchPlayers();
+        }
+
+
     }
 }
